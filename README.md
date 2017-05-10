@@ -1,6 +1,10 @@
-# \<optinomic-tree\>
+# \<optinomic-tree-view\>
 
-Tree
+A simple Polymer wrapper around dhtmlxTree.
+
+All credits and further documentation: https://docs.dhtmlx.com/treeview__index.html
+
+___
 
 ## Install the Polymer-CLI
 

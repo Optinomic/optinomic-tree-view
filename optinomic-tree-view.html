@@ -3,12 +3,23 @@
 <link rel="stylesheet" type="text/css" href="xTree/codebase/dhtmlxtreeview.css" />
 <script src="xTree/codebase/dhtmlxtreeview.js"></script>
 <!--
-`optinomic-tree`
-Tree
+`optinomic-tree-view` 
+
+## A simple Polymer wrapper around dhtmlxTree.
+
+### Getting started
+```
+bower install --save Optinomic/optinomic-tree-view
+```
+
+### Credits & Documentation
+- Credits: https://dhtmlx.com/
+- Documentation: https://docs.dhtmlx.com/treeview__index.html
+
 
 @demo demo/index.html
 -->
-<dom-module id="optinomic-tree">
+<dom-module id="optinomic-tree-view">
     <template>
         <style>
         :host {
@@ -32,15 +43,38 @@ Tree
     </template>
     <script>
     // ---------------------------------------------------
-    //   dhtmlxTree
-    //   https://docs.dhtmlx.com/treeview__index.html
+    // dhtmlxTree
+    // https://docs.dhtmlx.com/treeview__index.html
     // ---------------------------------------------------
     var tree;
 
     function doOnLoad() {
 
         tree = new dhtmlXTreeView("tree_container");
-        console.log('tree: ', tree);
+        console.log('Welcome - tree: ', tree);
+    };
+
+
+    function doSetSkin(skin) {
+
+        skin = skin || "dhx_web";
+
+        if (tree !== undefined) {
+            // "dhx_skyblue", "dhx_web", "dhx_terrace", "dhx_material"
+            tree.setSkin(skin);
+        };
+    };
+
+
+    function doSelect(id) {
+
+        id = id || "Start";
+
+        if (tree !== undefined) {
+            tree.selectItem(id);
+            console.log('doSelect: ', id);
+
+        };
     };
 
     function dataRefresh(data) {
@@ -48,15 +82,21 @@ Tree
         if (tree !== undefined) {
             tree.loadStruct(data);
             console.log('dataRefresh: ', data);
+
+            doSelect();
+            //doSetSkin();
+
         };
     };
+
+
 
     function getSelectedNodeInfo() {
         var id = tree.getSelectedId();
         if (id != null) {
 
             var return_obj = {
-                "id": idd,
+                "id": id,
                 "text": tree.getItemText(id),
                 "level": tree.getLevel(id),
                 "parent": tree.getParentId(id),
@@ -68,13 +108,10 @@ Tree
         };
     };
 
-    // ---------------------------------------------------
-    // Polymer Wrapper
-    // ---------------------------------------------------
 
     Polymer({
 
-        is: 'optinomic-tree',
+        is: 'optinomic-tree-view',
 
         properties: {
             data: {
@@ -86,13 +123,16 @@ Tree
             selected: {
                 type: Object,
                 value: {},
+                notify: true,
+                reflectToAttribute: true,
                 observer: '_selectedChanged'
             },
 
             select: {
-                type: Number
-
-            }
+                type: String,
+                value: "Start",
+                observer: '_selectChanged'
+            },
         },
 
 
@@ -103,8 +143,18 @@ Tree
         _dataChanged: function() {
 
             if (this.data) {
+
                 console.log('(tree) _dataChanged:', this.data);
                 dataRefresh(this.data);
+            };
+        },
+
+        _selectChanged: function() {
+
+            if (this.select) {
+
+                console.log('(tree) _selectChanged:', this.select);
+                doSelect(this.select);
             };
         },
 
@@ -116,6 +166,7 @@ Tree
             // console.log('attached');
             doOnLoad();
             this._dataChanged();
+
         },
 
     });
