@@ -36,10 +36,7 @@ bower install --save Optinomic/optinomic-tree-view
             margin-bottom: 20px;
         }
         </style>
-        <h2>Hello [[prop1]]!</h2>
-        <div>
-            <div id="tree_container" on-tap="_getSelected"></div>
-        </div>
+        <div id="tree_container" on-tap="_getSelected"></div>
     </template>
     <script>
     // ---------------------------------------------------
@@ -53,6 +50,8 @@ bower install --save Optinomic/optinomic-tree-view
         tree = new dhtmlXTreeView("tree_container");
         console.log('(tree) Welcome: ', tree);
     };
+
+
 
 
     function doSetSkin(skin) {
