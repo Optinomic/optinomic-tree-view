@@ -27,11 +27,11 @@ bower install --save Optinomic/optinomic-tree-view
         }
         
         div#tree_container {
-            position: relative;
             border: 1px solid #dfdfdf;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.09);
-            width: 256px;
-            height: 400px;
+            position: relative;
+            width: 100%;
+            min-height: 400px;
             margin-left: 20px;
             margin-bottom: 20px;
         }
@@ -162,7 +162,7 @@ bower install --save Optinomic/optinomic-tree-view
             console.log('(tree) selected:', this.selected);
         },
 
-        attached: function() {
+        ready: function() {
             // console.log('attached');
             doOnLoad();
             this._dataChanged();
