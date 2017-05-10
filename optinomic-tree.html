@@ -1,0 +1,161 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="stylesheet" type="text/css" href="xTree/codebase/fonts/font_roboto/roboto.css" />
+<link rel="stylesheet" type="text/css" href="xTree/codebase/dhtmlxtreeview.css" />
+<script src="xTree/codebase/dhtmlxtreeview.js"></script>
+<!--
+`optinomic-tree`
+Tree
+
+@demo demo/index.html
+-->
+<dom-module id="optinomic-tree">
+    <template>
+        <style>
+        :host {
+            display: block;
+        }
+        
+        div#tree_container {
+            position: relative;
+            border: 1px solid #dfdfdf;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.09);
+            width: 256px;
+            height: 400px;
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+        </style>
+        <h2>Hello [[prop1]]!</h2>
+        <div>
+            <div id="tree_container" on-tap="_getSelected"></div>
+        </div>
+    </template>
+    <script>
+    // ---------------------------------------------------
+    // dhtmlxTree
+    // https://docs.dhtmlx.com/treeview__index.html
+    // ---------------------------------------------------
+    var tree;
+
+    function doOnLoad() {
+
+        tree = new dhtmlXTreeView("tree_container");
+        console.log('Welcome - tree: ', tree);
+    };
+
+
+    function doSetSkin(skin) {
+
+        skin = skin || "dhx_skyblue";
+
+        // "dhx_skyblue", "dhx_web", "dhx_terrace", "dhx_material"
+        myTreeView.setSkin(skin);
+    };
+
+
+    function doSelect(id) {
+
+        id = id || "Start";
+
+        if (tree !== undefined) {
+            tree.selectItem(id);
+            console.log('doSelect: ', id);
+
+        };
+    };
+
+    function dataRefresh(data) {
+
+        if (tree !== undefined) {
+            tree.loadStruct(data);
+            console.log('dataRefresh: ', data);
+
+            doSelect();
+            doSetSkin();
+
+        };
+    };
+
+
+
+    function getSelectedNodeInfo() {
+        var id = tree.getSelectedId();
+        if (id != null) {
+
+            var return_obj = {
+                "id": id,
+                "text": tree.getItemText(id),
+                "level": tree.getLevel(id),
+                "parent": tree.getParentId(id),
+                "sub": tree.getSubItems(id),
+                "userdata": tree.getUserData(id, "")
+            };
+            //console.log('userdata: ', return_obj);
+            return return_obj;
+        };
+    };
+
+
+    Polymer({
+
+        is: 'optinomic-tree',
+
+        properties: {
+            data: {
+                type: Object,
+                value: {},
+                observer: '_dataChanged'
+            },
+
+            selected: {
+                type: Object,
+                value: {},
+                notify: true,
+                reflectToAttribute: true,
+                observer: '_selectedChanged'
+            },
+
+            select: {
+                type: String,
+                value: "Start",
+                observer: '_selectChanged'
+            },
+        },
+
+
+        _getSelected: function() {
+            this.set('selected', getSelectedNodeInfo());
+        },
+
+        _dataChanged: function() {
+
+            if (this.data) {
+
+                console.log('(tree) _dataChanged:', this.data);
+                dataRefresh(this.data);
+            };
+        },
+
+        _selectChanged: function() {
+
+            if (this.select) {
+
+                console.log('(tree) _selectChanged:', this.select);
+                doSelect(this.select);
+            };
+        },
+
+        _selectedChanged: function() {
+            console.log('(tree) selected:', this.selected);
+        },
+
+        attached: function() {
+            // console.log('attached');
+            doOnLoad();
+            this._dataChanged();
+
+        },
+
+    });
+    </script>
+</dom-module>
