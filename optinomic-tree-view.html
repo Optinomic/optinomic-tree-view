@@ -51,7 +51,7 @@ bower install --save Optinomic/optinomic-tree-view
     function doOnLoad() {
 
         tree = new dhtmlXTreeView("tree_container");
-        console.log('Welcome - tree: ', tree);
+        console.log('(tree) Welcome: ', tree);
     };
 
 
@@ -62,6 +62,7 @@ bower install --save Optinomic/optinomic-tree-view
         if (tree !== undefined) {
             // "dhx_skyblue", "dhx_web", "dhx_terrace", "dhx_material"
             tree.setSkin(skin);
+            console.log('(tree) doSetSkin: ', skin);
         };
     };
 
@@ -72,7 +73,7 @@ bower install --save Optinomic/optinomic-tree-view
 
         if (tree !== undefined) {
             tree.selectItem(id);
-            console.log('doSelect: ', id);
+            console.log('(tree) doSelect: ', id);
 
         };
     };
@@ -81,7 +82,7 @@ bower install --save Optinomic/optinomic-tree-view
 
         if (tree !== undefined) {
             tree.loadStruct(data);
-            console.log('dataRefresh: ', data);
+            console.log('(tree) dataRefresh: ', data);
 
             doSelect();
             //doSetSkin();
@@ -162,11 +163,15 @@ bower install --save Optinomic/optinomic-tree-view
             console.log('(tree) selected:', this.selected);
         },
 
-        ready: function() {
-            // console.log('attached');
-            doOnLoad();
+        _treeInit: function() {
             this._dataChanged();
+            this._selectChanged();
+        },
 
+        attached: function() {
+            console.log('(tree) attached');
+            doOnLoad();
+            this._treeInit();
         },
 
     });
