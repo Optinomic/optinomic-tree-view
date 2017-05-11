@@ -11,8 +11,17 @@
         :host {
             display: block;
         }
+        
+        .drawer {
+            width: 256px;
+            max-width: 256px;
+        }
+        
+        optinomic-tree-view {
+            --tree-view-height: 500px;
+        }
         </style>
-        <div>
+        <div class="drawer">
             <h3>Demo-Wrapper</h3>
             <hr>
             <optinomic-tree-view select='Stephen King' data='[[demo_data]]' selected='{{selected_node}}'></optinomic-tree-view>

@@ -22,15 +22,18 @@ bower install --save Optinomic/optinomic-tree-view
         <style>
         :host {
             display: block;
+            --tree-view-height: 400px;
         }
         
         div#tree_container {
-            border: 1px solid #dfdfdf;
             position: relative;
+            display: block;
+            border: 1px solid #EEEEEE;
             width: 100%;
-            min-height: 400px;
+            height: var(--tree-view-height);
         }
         </style>
+        <p>gaa</p>
         <div id="tree_container" on-tap="_getSelected"></div>
     </template>
     <script>
@@ -83,6 +86,7 @@ bower install --save Optinomic/optinomic-tree-view
                 this.set('selected', return_obj);
 
             };
+
         },
 
 
@@ -114,8 +118,9 @@ bower install --save Optinomic/optinomic-tree-view
 
             if (this.data) {
 
-                console.log('(tree) _dataChanged:', this.data);
                 this._dataRefresh(this.data);
+                //console.log('(tree) _dataChanged:', this.data);
+
             };
         },
 
@@ -123,13 +128,10 @@ bower install --save Optinomic/optinomic-tree-view
 
             if (this.select) {
 
-                console.log('(tree) _selectChanged:', this.select);
                 this._selectNode(this.select);
-            };
-        },
+                //console.log('(tree) _selectChanged:', this.select);
 
-        _selectedChanged: function() {
-            console.log('(tree) selected:', this.selected);
+            };
         },
 
 
@@ -153,8 +155,8 @@ bower install --save Optinomic/optinomic-tree-view
         // --------------------------------
 
         attached: function() {
-            console.log('(tree) attached');
             this._treeInit();
+            //console.log('(tree) attached', this.offsetWidth, this.offsetHeight);
         },
 
     });
