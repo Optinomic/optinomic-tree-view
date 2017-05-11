@@ -1,7 +1,5 @@
 <link rel="import" href="../polymer/polymer.html">
-<link rel="stylesheet" type="text/css" href="xTree/codebase/fonts/font_roboto/roboto.css" />
-<link rel="stylesheet" type="text/css" href="xTree/codebase/dhtmlxtreeview.css" />
-<script src="xTree/codebase/dhtmlxtreeview.js"></script>
+<link rel="import" href="imports.html">
 <!--
 `optinomic-tree-view` 
 
@@ -28,87 +26,14 @@ bower install --save Optinomic/optinomic-tree-view
         
         div#tree_container {
             border: 1px solid #dfdfdf;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.09);
             position: relative;
             width: 100%;
             min-height: 400px;
-            margin-left: 20px;
-            margin-bottom: 20px;
         }
         </style>
         <div id="tree_container" on-tap="_getSelected"></div>
     </template>
     <script>
-    // ---------------------------------------------------
-    // dhtmlxTree
-    // https://docs.dhtmlx.com/treeview__index.html
-    // ---------------------------------------------------
-    var tree;
-
-    function doOnLoad() {
-
-        tree = new dhtmlXTreeView("tree_container");
-        console.log('(tree) Welcome: ', tree);
-    };
-
-
-
-
-    function doSetSkin(skin) {
-
-        skin = skin || "dhx_web";
-
-        if (tree !== undefined) {
-            // "dhx_skyblue", "dhx_web", "dhx_terrace", "dhx_material"
-            tree.setSkin(skin);
-            console.log('(tree) doSetSkin: ', skin);
-        };
-    };
-
-
-    function doSelect(id) {
-
-        id = id || "Start";
-
-        if (tree !== undefined) {
-            tree.selectItem(id);
-            console.log('(tree) doSelect: ', id);
-
-        };
-    };
-
-    function dataRefresh(data) {
-
-        if (tree !== undefined) {
-            tree.loadStruct(data);
-            console.log('(tree) dataRefresh: ', data);
-
-            doSelect();
-            //doSetSkin();
-
-        };
-    };
-
-
-
-    function getSelectedNodeInfo() {
-        var id = tree.getSelectedId();
-        if (id != null) {
-
-            var return_obj = {
-                "id": id,
-                "text": tree.getItemText(id),
-                "level": tree.getLevel(id),
-                "parent": tree.getParentId(id),
-                "sub": tree.getSubItems(id),
-                "userdata": tree.getUserData(id, "")
-            };
-            //console.log('userdata: ', return_obj);
-            return return_obj;
-        };
-    };
-
-
     Polymer({
 
         is: 'optinomic-tree-view',
@@ -124,8 +49,7 @@ bower install --save Optinomic/optinomic-tree-view
                 type: Object,
                 value: {},
                 notify: true,
-                reflectToAttribute: true,
-                observer: '_selectedChanged'
+                reflectToAttribute: true
             },
 
             select: {
@@ -136,16 +60,62 @@ bower install --save Optinomic/optinomic-tree-view
         },
 
 
+        // --------------------------------
+        // Actions
+        // --------------------------------
+
+
         _getSelected: function() {
-            this.set('selected', getSelectedNodeInfo());
+
+            var id = this.tree.getSelectedId();
+            if (id != null) {
+
+                var return_obj = {
+                    "id": id,
+                    "text": this.tree.getItemText(id),
+                    "level": this.tree.getLevel(id),
+                    "parent": this.tree.getParentId(id),
+                    "sub": this.tree.getSubItems(id),
+                    "userdata": this.tree.getUserData(id, "")
+                };
+                console.log('(tree) selected node: ', return_obj);
+
+                this.set('selected', return_obj);
+
+            };
         },
+
+
+        _dataRefresh: function(data) {
+
+            if (this.tree !== undefined) {
+                this.tree.loadStruct(data);
+                console.log('(tree) dataRefresh: ', this.data);
+            };
+        },
+
+
+        _selectNode: function(id) {
+            id = id || "Start";
+
+            if (this.tree !== undefined) {
+                this.tree.selectItem(id);
+                this._getSelected();
+                console.log('(tree) doSelect: ', id);
+            };
+        },
+
+        // --------------------------------
+        // Change Observers
+        // --------------------------------
+
 
         _dataChanged: function() {
 
             if (this.data) {
 
                 console.log('(tree) _dataChanged:', this.data);
-                dataRefresh(this.data);
+                this._dataRefresh(this.data);
             };
         },
 
@@ -154,7 +124,7 @@ bower install --save Optinomic/optinomic-tree-view
             if (this.select) {
 
                 console.log('(tree) _selectChanged:', this.select);
-                doSelect(this.select);
+                this._selectNode(this.select);
             };
         },
 
@@ -162,14 +132,28 @@ bower install --save Optinomic/optinomic-tree-view
             console.log('(tree) selected:', this.selected);
         },
 
+
+        // --------------------------------
+        // Init
+        // --------------------------------
+
+
         _treeInit: function() {
+            var container = this.$.tree_container;
+            console.log('(tree) Init:', container);
+            this.tree = new dhtmlXTreeView(container);
+
             this._dataChanged();
             this._selectChanged();
         },
 
+
+        // --------------------------------
+        // Lifecycle
+        // --------------------------------
+
         attached: function() {
             console.log('(tree) attached');
-            doOnLoad();
             this._treeInit();
         },
 
